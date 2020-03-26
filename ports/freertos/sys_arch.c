@@ -30,6 +30,8 @@
  *
  */
 
+#include <string.h>
+
 /* lwIP includes. */
 #include "lwip/debug.h"
 #include "lwip/def.h"
@@ -39,6 +41,7 @@
 #include "FreeRTOS.h"
 #include "semphr.h"
 #include "task.h"
+#include "portable.h"
 
 /** Set this to 1 if you want the stack size passed to sys_thread_new() to be
  * interpreted as number of stack words (FreeRTOS-like).
@@ -533,6 +536,33 @@ void sys_arch_netconn_sem_free(void)
     vTaskSetThreadLocalStoragePointer(task, 0, NULL);
   }
 }
+
+void lwipPortFree(void* rmem) {
+	vPortFree(rmem);
+}
+
+void* lwipPortMalloc(mem_size_t size) {
+	return pvPortMalloc((size_t)size);
+}
+
+
+void *
+lwipPortCalloc(mem_size_t count, mem_size_t size) {
+size_t alloc_size = (size_t)count * (size_t)size;
+void *ret;
+
+	if (alloc_size > 0) {
+		ret = pvPortMalloc(alloc_size);
+		if (ret != NULL) {
+			memset(ret,0,alloc_size);
+		}
+	} else {
+		ret = NULL;
+	}
+
+	return ret;
+}
+
 
 #else /* configNUM_THREAD_LOCAL_STORAGE_POINTERS > 0 */
 #error LWIP_NETCONN_SEM_PER_THREAD needs configNUM_THREAD_LOCAL_STORAGE_POINTERS

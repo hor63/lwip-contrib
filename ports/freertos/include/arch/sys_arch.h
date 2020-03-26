@@ -34,6 +34,7 @@
 
 #include "lwip/opt.h"
 #include "lwip/arch.h"
+#include "lwip/mem.h"
 
 /** This is returned by _fromisr() sys functions to tell the outermost function
  * that a higher priority task was woken and the scheduler needs to be invoked.
@@ -91,5 +92,13 @@ void sys_arch_netconn_sem_free(void);
 #define LWIP_NETCONN_THREAD_SEM_ALLOC() sys_arch_netconn_sem_alloc()
 #define LWIP_NETCONN_THREAD_SEM_FREE()  sys_arch_netconn_sem_free()
 #endif /* LWIP_NETCONN_SEM_PER_THREAD */
+
+
+void lwipPortFree(void* rmem);
+
+void* lwipPortMalloc(mem_size_t size);
+
+void* lwipPortCalloc(mem_size_t count, mem_size_t size);
+
 
 #endif /* LWIP_ARCH_SYS_ARCH_H */
