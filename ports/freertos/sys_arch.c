@@ -536,6 +536,12 @@ void sys_arch_netconn_sem_free(void)
     vTaskSetThreadLocalStoragePointer(task, 0, NULL);
   }
 }
+#else /* configNUM_THREAD_LOCAL_STORAGE_POINTERS > 0 */
+#error LWIP_NETCONN_SEM_PER_THREAD needs configNUM_THREAD_LOCAL_STORAGE_POINTERS
+#endif /* configNUM_THREAD_LOCAL_STORAGE_POINTERS > 0 */
+
+#endif /* LWIP_NETCONN_SEM_PER_THREAD */
+
 
 void lwipPortFree(void* rmem) {
 	vPortFree(rmem);
@@ -564,11 +570,6 @@ void *ret;
 }
 
 
-#else /* configNUM_THREAD_LOCAL_STORAGE_POINTERS > 0 */
-#error LWIP_NETCONN_SEM_PER_THREAD needs configNUM_THREAD_LOCAL_STORAGE_POINTERS
-#endif /* configNUM_THREAD_LOCAL_STORAGE_POINTERS > 0 */
-
-#endif /* LWIP_NETCONN_SEM_PER_THREAD */
 
 #if LWIP_FREERTOS_CHECK_CORE_LOCKING
 #if LWIP_TCPIP_CORE_LOCKING
